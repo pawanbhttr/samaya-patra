@@ -1,0 +1,91 @@
+﻿@model Vehicle
+@{
+    ViewData["Title"] = "Add Vehicle";
+}
+
+<div class="card shadow-sm my-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Vehicle Info</h6>
+    </div>
+    <div class="card-body">
+        <form asp-action="Add" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="VehicleID">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="VehicleNo">Vehicle No<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="VehicleNo" placeholder="Vehicle No">
+                    <span asp-validation-for="VehicleNo" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="ModelNo">Model No<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="ModelNo" placeholder="Model No">
+                    <span asp-validation-for="ModelNo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Color">Color<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="Color" placeholder="Color">
+                    <span asp-validation-for="Color" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="PassengerCapacity">Passenger Capacity<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="PassengerCapacity" placeholder="Passenger Capacity">
+                    <span asp-validation-for="PassengerCapacity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="CubicCapacity">Cubic Capacity (CC)<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="CubicCapacity" placeholder="Cubic Capacity (CC)">
+                    <span asp-validation-for="CubicCapacity" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="PurchasedDate">Purchase Date<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control date-picker" autocomplete="off" asp-for="PurchasedDate" placeholder="Purchase Date">
+                    <span asp-validation-for="PurchasedDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="DriverName">Driver Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="DriverName" placeholder="Driver Name">
+                    <span asp-validation-for="DriverName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="DriverContact">Driver Contact No<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="DriverContact" placeholder="Driver Contact No">
+                    <span asp-validation-for="DriverContact" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="DriverAdddress">Driver Address</label>
+                    <input type="text" class="form-control" asp-for="DriverAdddress" placeholder="Driver Address">
+                    <span asp-validation-for="DriverAdddress" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="OwnerName">Owner Name</label>
+                    <input type="text" class="form-control" asp-for="OwnerName" placeholder="Owner Name">
+                    <span asp-validation-for="OwnerName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="OwnerContact">Owner Contact No</label>
+                    <input type="text" class="form-control" asp-for="OwnerContact" placeholder="Owner Contact No">
+                    <span asp-validation-for="OwnerContact" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="OwnerAddress">Owner Address</label>
+                    <input type="text" class="form-control" asp-for="OwnerAddress" placeholder="Owner Address">
+                    <span asp-validation-for="OwnerAddress" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" data-toggle="tooltip" title="Save Vehicle" class="btn btn-sm btn-outline-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+                &nbsp;
+                <a class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Cancel" asp-action="Index"><i class="fa fa-remove"></i>&nbsp;Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

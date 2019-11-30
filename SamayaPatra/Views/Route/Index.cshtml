@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Route>
+@{
+    ViewData["Title"] = "Routes";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Routes</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <span data-toggle="tooltip" title="Add New Routes">
+            <a asp-action="Add" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-plus-circle"></i>&nbsp;
+                Add
+            </a>
+        </span>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table dataTables table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Route Name</th>
+                        <th>Total KM</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 1; }
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@sn</td>
+                        <td>@item.RouteName</td>
+                        <td>@item.TotalKM</td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge badge-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-danger">Deleted</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <button type="button" data-toggle="tooltip" data-routeid="@item.RouteID" title="Deactivate" class="btn btn-sm deactivate btn-outline-danger"><i class="fa fa-trash-o"></i></button>
+                            }
+                            else
+                            {
+                                <button type="button" data-toggle="tooltip" data-routeid="@item.RouteID" title="Activate" class="btn btn-sm activate btn-outline-primary"><i class="fa fa-check-circle-o"></i></button>
+                            }
+                        </td>
+                    </tr>
+                        sn++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(".deactivate").click(function () {
+            var model = {
+                RouteID: $(this).data("routeid"),
+                IsActive: false
+            }
+            $.post("/Route/ChangeRouteStatus", { route: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+
+        $(".activate").click(function () {
+            var model = {
+                RouteID: $(this).data("routeid"),
+                IsActive: true
+            }
+            $.post("/Route/ChangeRouteStatus", { route: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+    </script>
+}

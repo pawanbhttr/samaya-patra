@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link rel="icon" type="image/png" href="~/images/icons/favicon.ico" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/jquerycalendar/css/jquery.datepick.css" rel="stylesheet" />
+    <link href="~/styles/admin.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr/build/toastr.min.css" rel="stylesheet" />
+    <link href="~/styles/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+
+        <!-- Sidebar -->
+        <div class="bg-dark" id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                <a class="navbar-brand text-white" asp-controller="Home" asp-action="Index"><i class="fa fa-clock-o"></i>&nbsp;Samaya Patra</a>
+            </div>
+            <div class="list-group list-group-flush">
+                <a asp-controller="Home" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white">
+                    <i class="fa fa-home"></i>&nbsp;Dashboard
+                </a>
+                @if (User.Claims.Where(x => x.Type == "UserRole").First().Value.ToUpper() == "Administrator".ToUpper())
+                {
+                    <a asp-controller="Vehicle" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white">
+                        <i class="fa fa-bus"></i>&nbsp;Vehicle
+                    </a>
+                    <a asp-controller="CheckPoint" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white"><i class="fa fa-location-arrow"></i>&nbsp;Check Point</a>
+                    <a asp-controller="Route" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white"><i class="fa fa-road"></i>&nbsp;Route</a>
+                    <a asp-controller="Transaction" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white"><i class="fa fa-book"></i>&nbsp;Trip</a>
+                    <a asp-controller="User" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white"><i class="fa fa-users"></i>&nbsp;User</a>
+                }
+                <a asp-controller="Report" asp-action="Index" class="list-group-item list-group-item-action bg-dark text-white"><i class="fa fa-book"></i>&nbsp;Report</a>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-dark border-bottom">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-user-circle-o"></i>&nbsp;@User.Identity.Name
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Sign Out&nbsp;<i class="fa fa-sign-out"></i></a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                @RenderBody()
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Pawan Bhattarai @DateTime.Now.Year | All Rights Reserved</span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+    @await RenderSectionAsync("Modals", false)
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/popper.js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/toastr/build/toastr.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/jquerycalendar/js/jquery.plugin.min.js"></script>
+    <script src="~/lib/jquerycalendar/js/jquery.datepick.min.js"></script>
+    <script src="~/scripts/app.js"></script>
+    @if (ViewBag.Message != null && !string.IsNullOrWhiteSpace(ViewBag.Message as string))
+    {
+        <script>showMessage("@ViewBag.Message", "@ViewBag.MessageType");</script>
+    }
+    @await RenderSectionAsync("Scripts", false)
+</body>
+</html>

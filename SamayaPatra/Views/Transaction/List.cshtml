@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Transaction>
+@{
+    ViewData["Title"] = "Active Trip";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Active Trip Info</h1>
+
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table dataTables table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Vehicle No</th>
+                        <th>Route Name</th>
+                        <th>Total KM</th>
+                        <th>Last Check Point</th>
+                        <th>Checked Date</th>
+                        <th>Arrival Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 1; }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@sn</td>
+                            <td>@item.VehicleNo</td>
+                            <td>@item.RouteName</td>
+                            <td>@item.TotalKM</td>
+                            <td>@item.LastCheckPoint</td>
+                            <td>@item.LastCheckedDate.ToLongDateString()</td>
+                            <td>@item.LastCheckedDate.ToLongTimeString()</td>
+                            <td>
+                                <button type="button" data-toggle="tooltip" data-transactionid="@item.TrasactionID" title="Delete" class="btn btn-sm deactivate btn-outline-primary"><i class="fa fa-check-circle-o"></i></button>
+                            </td>
+                        </tr>
+                        sn++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(".deactivate").click(function () {
+            var model = {
+                TrasactionID: $(this).data("transactionid")
+            }
+            $.post("/Transaction/DeleteTrip", { transaction: model }, function () {
+                showMessage(response.message, response.messageType);
+            });
+        });
+    </script>
+}

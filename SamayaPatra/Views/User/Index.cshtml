@@ -1,0 +1,100 @@
+﻿@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Users";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Users</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <span data-toggle="tooltip" title="Add New User">
+            <a asp-action="Add" class="btn btn-sm btn-outline-primary">
+                <i class="fa fa-plus-circle"></i>&nbsp;
+                Add
+            </a>
+        </span>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table dataTables table-striped table-bordered" id="vehicles">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>User Role</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Vehicle No</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 1; }
+                    @foreach (var user in Model)
+                    {
+                    <tr>
+                        <td>@sn</td>
+                        <td>@user.FullName</td>
+                        <td>@user.UserName</td>
+                        <td>@user.UserRole</td>
+                        <td>@user.Contact</td>
+                        <td>@user.Email</td>
+                        <td>@user.Address</td>
+                        <td>@user.VehicleNo</td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <span class="badge badge-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-danger">Deleted</span>
+                            }
+                        </td>
+                        <td>
+                            @if (user.IsActive)
+                            {
+                                <a href="/User/Edit/?UserID=@user.UserID" data-toggle="tooltip" title="Edit" class="btn btn-sm btn-outline-warning"><i class="fa fa-edit"></i></a>
+                                <button type="button" data-toggle="tooltip" data-userid="@user.UserID" title="Deactivate" class="btn btn-sm deactivate btn-outline-danger"><i class="fa fa-trash-o"></i></button>
+                            }
+                            else
+                            {
+                                <button type="button" data-toggle="tooltip" data-userid="@user.UserID" title="Activate" class="btn btn-sm activate btn-outline-primary"><i class="fa fa-check-circle-o"></i></button>
+                            }
+                        </td>
+                    </tr>
+                        sn++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(".deactivate").click(function () {
+            var model = {
+                UserID: $(this).data("userid"),
+                IsActive: false
+            }
+            $.post("/User/ChangeUserStatus", { user: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+
+        $(".activate").click(function () {
+            var model = {
+                UserID: $(this).data("userid"),
+                IsActive: true
+            }
+            $.post("/User/ChangeUserStatus", { user: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+    </script>
+}

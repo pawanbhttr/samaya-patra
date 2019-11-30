@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ReportInfo>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Report</h1>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table dataTables table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Vehicle No</th>
+                        <th>Route Name</th>
+                        <th>Check Point Name</th>
+                        <th>Check Point Order</th>
+                        <th>Estimated KM</th>
+                        <th>Trip Date</th>
+                        <th>Estimated Arrival Minutes</th>
+                        <th>Actual Arrival Minutes</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int sn = 1; }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@sn</td>
+                            <td>@item.VehicleNo</td>
+                            <td>@item.RouteName</td>
+                            <td>@item.CheckPointName</td>
+                            <td>@item.CheckPointOrder</td>
+                            <td>@item.EstimatedKM</td>
+                            <td>@item.ArrivalTime.ToLongDateString()</td>
+                            <td>@item.EstimatedArrivalMinutes</td>
+                            <td>
+                                @item.ArrivalMinutes
+                            </td>
+                            <td>
+                                @if (item.ArrivalMinutes < item.EstimatedArrivalMinutes)
+                                {<span class="badge badge-danger">Early Arrival</span> }
+                                else
+                                { <span class="badge badge-success">Intime Arrival</span>}
+                            </td>
+                        </tr>
+                        sn++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

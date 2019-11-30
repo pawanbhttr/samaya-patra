@@ -1,0 +1,127 @@
+﻿@model CheckPoint
+@{
+    ViewData["Title"] = "Route Check Points";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Check Points</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <span data-toggle="tooltip" title="Add New Check Point">
+            <button data-toggle="modal" data-target="#addupdate" data-backdrop="static" class="btn add btn-sm btn-outline-primary">
+                <i class="fa fa-plus-circle"></i>&nbsp;
+                Add
+            </button>
+        </span>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table dataTables table-striped table-bordered" id="vehicles">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Check Points</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Modals {
+    <div class="modal fade" id="addupdate" tabindex="-1" role="dialog" aria-labelledby="addupdatelabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modaltitle">Check Point</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form asp-action="Add" method="post">
+                    <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="CheckPointID">
+                        <div class="form-group">
+                            <label asp-for="CheckPointName">Check Point Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" asp-for="CheckPointName" placeholder="Check Point Name">
+                            <span asp-validation-for="CheckPointName" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" data-toggle="tooltip" title="Save Check Point" class="btn btn-sm btn-outline-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+                        &nbsp;
+                        <button class="btn btn-sm btn-outline-secondary" data-dismiss="modal" data-toggle="tooltip" title="Cancel"><i class="fa fa-remove"></i>&nbsp;Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script>
+        $(function () {
+            $.post("/CheckPoint/GetCheckPoint", {}, function (response) {
+                var tbody = "";
+                $.each(response, function (i, obj) {
+                    tbody += "<tr><td>" + (i + 1) + "</td>";
+                    tbody += "<td>" + obj.checkPointName + "</td>";
+                    tbody += "<td>";
+                    if (obj.isActive === true) {
+                        tbody += "<span class=\"badge badge-success\">Active</span>";
+                    }
+                    else {
+                        tbody += "<span class=\"badge badge-danger\">Deleted</span>";
+                    }
+                    tbody += "</td>";
+                    tbody += "<td>";
+                    if (obj.isActive === true) {
+                        tbody += "<button type=\"button\" data-toggle=\"tooltip\" data-checkpointname='" + obj.checkPointName + "' data-checkpointid=" + obj.checkPointID + " title=\"Edit\" class=\"btn btn-sm edit btn-outline-warning\"><i class=\"fa fa-edit\"></i></button>&nbsp;";
+                        tbody += "<button type=\"button\" data-toggle=\"tooltip\" data-checkpointid=" + obj.checkPointID + " title=\"Deactivate\" class=\"btn btn-sm deactivate btn-outline-danger\"><i class=\"fa fa-trash-o\"></i></button>";
+                    }
+                    else {
+                        tbody += "<button type=\"button\" data-toggle=\"tooltip\" data-checkpointid=" + obj.checkPointID + " title=\"Activate\" class=\"btn btn-sm activate btn-outline-primary\"><i class=\"fa fa-check-circle-o\"></i></button>";
+                    }
+                    tbody += "</td></tr>";
+                });
+                $(".dataTables > tbody").html(tbody);
+            });
+        });
+
+        $(document).on("click", ".deactivate", function () {
+            var model = {
+                CheckPointID: $(this).data("checkpointid"),
+                IsActive: false
+            }
+            $.post("/CheckPoint/ChangeCheckPointStatus", { checkPoint: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+
+        $(document).on("click", ".activate", function () {
+            var model = {
+                CheckPointID: $(this).data("checkpointid"),
+                IsActive: true
+            }
+            $.post("/CheckPoint/ChangeCheckPointStatus", { checkPoint: model }, function (response) {
+                showMessage(response.message, response.messageType);
+            });
+        });
+
+        $(document).on("click", ".edit", function () {
+            var model = {
+                CheckPointID: $(this).data("checkpointid"),
+                CheckPointName: $(this).data("checkpointname")
+            }
+            $("#CheckPointID").val(model.CheckPointID);
+            $("#CheckPointName").val(model.CheckPointName);
+            $(".add").click();
+        });
+    </script>
+}

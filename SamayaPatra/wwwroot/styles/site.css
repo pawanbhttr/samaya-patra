@@ -1,0 +1,73 @@
+﻿button {
+    border-radius:10px;
+}
+
+.light-login {
+    background: url('../images/pattern.jpg') #DFE0E2;
+}
+
+.login-box {
+    border-radius: 4px;
+    background: #F7F7F7;
+}
+
+.header.blue {
+    border-bottom-color: #d5e3ef;
+}
+
+.blue {
+    color: #478FCA !important;
+}
+
+.header {
+    line-height: 28px;
+    margin-bottom: 16px;
+    margin-top: 18px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #CCC;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    margin-left: -15rem;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+}
+
+    #sidebar-wrapper .sidebar-heading {
+        padding: 0.875rem 1.25rem;
+        font-size: 1.2rem;
+    }
+
+    #sidebar-wrapper .list-group {
+        width: 15rem;
+    }
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}

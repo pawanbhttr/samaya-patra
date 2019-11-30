@@ -1,0 +1,43 @@
+﻿@model Transaction
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Trip Info</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <span data-toggle="tooltip" title="View Active Trip">
+                <a asp-action="List" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-th-list"></i>&nbsp;
+                    View Active Trip
+                </a>
+            </span>
+        </div>
+    </div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="VehicleID">Vehicle No</label>
+                    <select class="form-control" asp-for="VehicleID" asp-items="@(new SelectList(ViewBag.Vehicles,"VehicleID", "VehicleNo"))"></select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="RouteID">Route</label>
+                    <select class="form-control" asp-for="RouteID" asp-items="@(new SelectList(ViewBag.Routes,"RouteID", "RouteName"))"></select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="TrasactionID">Trip No</label>
+                    <input type="text" class="form-control" asp-for="TrasactionID" placeholder="Trip No">
+                </div>
+                <div class="form-group col-md-6">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Trip</button>
+        </form>
+
+    </div>
+</div>

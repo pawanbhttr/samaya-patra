@@ -1,0 +1,171 @@
+﻿@model Route
+@{
+    ViewData["Title"] = "Add Route";
+}
+
+<div class="card shadow-sm my-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Route Info</h6>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RouteID">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="RouteName">Route Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="RouteName" placeholder="Route Name">
+                    <span asp-validation-for="RouteName" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="TotalKM">Total KM<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" asp-for="TotalKM" placeholder="Total KM">
+                    <span asp-validation-for="TotalKM" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="alert alert-info col-12" role="alert">
+                    <i class="fa fa-info-circle"></i>&nbsp;Starting checkpoint of route donot need value on total km and estimated arrival minutes
+                </div>
+            </div>
+            <div class="form-row">
+                <table class="checkpoints table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Check Point</th>
+                            <th>Check Point KM</th>
+                            <th>Estimated Arrival Minutes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="checkpoint form-control">
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="totalkm form-control" />
+                            </td>
+                            <td>
+                                <input type="number" class="arrivalminutes form-control" />
+                            </td>
+                            <td>
+                                <button type="button" data-toggle="tooltip" title="Add New Row" class="addrow btn btn-sm btn-outline-primary"><i class="fa fa-plus"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <button type="button" data-toggle="tooltip" title="Save Vehicle" class="btnsave btn btn-sm btn-outline-primary"><i class="fa fa-save"></i>&nbsp;Save</button>
+                &nbsp;
+                <a class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" title="Cancel" asp-action="Index"><i class="fa fa-remove"></i>&nbsp;Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $.post("/Route/LoadCheckPoints", {}, function (response) {
+                if (response.success === true) {
+                    var ddl = $(".checkpoint");
+                    ddl.empty();
+                    ddl.append("<option value=''>-- Select --</option>");
+                    $.each(response.data, function (i, item) {
+                        ddl.append("<option value='" + item.checkPointID + "'>" + item.checkPointName + "</option>");
+                    });
+                }
+            });
+
+            $(".checkpoints > tbody > tr:first").each(function () {
+                $(this).find(".totalkm").attr("disabled", true);
+                $(this).find(".arrivalminutes").attr("disabled", true);
+            });
+        });
+
+        $(document).on("click", ".addrow", function () {
+            AddNewRow();
+        });
+
+        $(document).on("click", ".deleterow", function () {
+            $(this).parents("tr").remove();
+        });
+
+        $(".btnsave").click(function () {
+            var routeId = $("#RouteID").val();
+            var routeName = $("#RouteName").val();
+            var totalKM = $("#TotalKM").val();
+            if ($.isEmptyObject(routeName)) {
+                $("#RouteName").next("span").html($("#RouteName").attr("data-val-required"));
+                return;
+            } else if ($.isEmptyObject(totalKM)) {
+                $("#TotalKM").next("span").html($("#TotalKM").attr("data-val-required"));
+                return;
+            } else if (!$.isNumeric(totalKM)) {
+                $("#TotalKM").next("span").html($("#TotalKM").attr("data-val-number"));
+                return;
+            }
+
+            var checkPoints = [];
+            $(".checkpoints > tbody > tr").each(function () {
+                if ($.isNumeric($(this).find(".checkpoint").val())) {
+                    var index = $(this).index() + 1;
+                    if (index == 1)
+                        checkPoints.push({ CheckPointID: $(this).find(".checkpoint").val(), EstimatedKM: 0, EstimatedArrivalMinutes: 0 });
+                    else if ($.isNumeric($(this).find(".totalkm").val()) && $.isNumeric($(this).find(".arrivalminutes").val()))
+                        checkPoints.push({ CheckPointID: $(this).find(".checkpoint").val(), EstimatedKM: $(this).find(".totalkm").val(), EstimatedArrivalMinutes: $(this).find(".arrivalminutes").val() });
+                }
+            });
+
+            if (checkPoints.length <= 1) {
+                showMessage("There should be atleast 2 checkpoint for a route. Please select at least two routes.", "error");
+                return;
+            }
+
+            var model = {
+                RouteID: routeId,
+                RouteName: routeName,
+                TotalKM: totalKM,
+                CheckPoints: checkPoints
+            };
+
+            $.post("/Route/Add", { route: model }, function (response) {
+                console.log(response);
+                showMessage(response.message, response.messageType);
+                if (response.messageType == "success") {
+                    $(".checkpoints > tbody > tr:not(:first-child)").each(function () {
+                        $(this).remove();
+                    });
+                    var firstRow = $(".checkpoints > tbody > tr:first");
+                    $(firstRow).find(".checkpoint").val('');
+                    $(firstRow).find(".totalkm").val('');
+                    $(firstRow).find(".arrivalminutes").val('');
+                    $("#RouteID").val('');
+                    $("#RouteName").val('');
+                    $("#TotalKM").val('');
+                }
+            });
+        });
+
+        function AddNewRow() {
+            var options = "";
+            $.post("/Route/LoadCheckPoints", {}, function (response) {
+                if (response.success === true) {
+                    options += "<option value=''>-- Select --</option>";
+                    $.each(response.data, function (i, item) {
+                        options += "<option value='" + item.checkPointID + "'>" + item.checkPointName + "</option>";
+                    });
+                }
+            }).done(function () {
+                var shtml = "<tr><td><select class='checkpoint form-control'>" + options + "</select></td>";
+                shtml += "<td><input type=\"number\" class=\"totalkm form-control\" /></td>";
+                shtml += "<td><input type=\"number\" class=\"arrivalminutes form-control\" /></td>";
+                shtml += "<td><button type=\"button\" class=\"deleterow btn btn-sm btn-outline-danger\"><i class=\"fa fa-trash-o\"></i></button></td></tr>";
+                $(".checkpoints > tbody > tr:last").after(shtml);
+            });
+        }
+    </script>
+}
