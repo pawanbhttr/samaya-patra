@@ -1,1 +1,2 @@
-"# samaya-patra" 
+# Samaya Patra
+Time Card Management System
